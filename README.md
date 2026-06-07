@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project builds a **panoramic image** by stitching together multiple overlapping photographs taken with a small horizontal shift (translation to the right) between each shot. Using classical computer vision techniques — SIFT feature detection, feature matching, and homography estimation — the images are aligned and blended into a single wide panorama.
+This project builds a **panoramic image** by stitching together multiple overlapping photographs taken with a small horizontal shift (translation to the right) between each shot. Using classical computer vision techniques SIFT feature detection, feature matching, and homography estimation the images are aligned and blended into a single wide panorama.
 
 ---
 
@@ -20,11 +20,11 @@ The input images were captured by keeping the camera fixed in position and rotat
 
 The stitching is done incrementally: the first image is used as the base, and each subsequent image is aligned and merged into the growing result.
 
-### Step 1 — Grayscale Conversion
+### Step 1 : Grayscale Conversion
 
 Each image pair (the current result and the next image) is converted to grayscale. Color information is not needed for feature detection, and working in grayscale reduces computation.
 
-### Step 2 — SIFT Feature Detection
+### Step 2 : SIFT Feature Detection
 
 **SIFT (Scale-Invariant Feature Transform)** is applied to both images to detect *keypoints* — distinctive local regions in the image (corners, edges, blobs) that are robust to scale changes, rotation, and minor perspective distortions.
 
@@ -32,7 +32,7 @@ For each keypoint, a 128-dimensional **descriptor** vector is computed, encoding
 
 > Keypoint visualizations are displayed for both the left and right images at this stage.
 
-### Step 3 — Feature Matching (BFMatcher + Lowe's Ratio Test)
+### Step 3 : Feature Matching (BFMatcher + Lowe's Ratio Test)
 
 A **Brute-Force Matcher (BFMatcher)** compares descriptors from the right image against descriptors from the left image using k-Nearest Neighbors (k=2).
 
@@ -46,7 +46,7 @@ This keeps only matches where the best candidate is significantly closer than th
 
 > The accepted matches are visualized with green lines drawn between the two images.
 
-### Step 4 — Homography Estimation (RANSAC)
+### Step 4 : Homography Estimation (RANSAC)
 
 A **homography** is a 3×3 transformation matrix that describes how to warp one image so it aligns with the other. It is computed from the good matches using **RANSAC (Random Sample Consensus)**, an algorithm that is robust to outliers (incorrectly matched points).
 
@@ -54,7 +54,7 @@ At least **10 good matches** are required for this step to proceed.
 
 The right image's boundary is then projected onto the left image's coordinate space to visualize the overlap region.
 
-### Step 5 — Perspective Warping
+### Step 5 : Perspective Warping
 
 The right image is warped using `cv2.warpPerspective` with the computed homography matrix, projecting it into the coordinate frame of the left (base) image.
 
@@ -67,7 +67,7 @@ new height = height_left + height_right
 
 > The warped right image is displayed at this stage.
 
-### Step 6 — Image Blending
+### Step 6 : Image Blending
 
 The left image is placed onto the warped canvas. To avoid overwriting valid pixels from the right image with black background pixels, a **black-pixel mask** is used:
 
@@ -76,11 +76,11 @@ The left image is placed onto the warped canvas. To avoid overwriting valid pixe
 
 > The combined result is displayed after blending.
 
-### Step 7 — Trimming
+### Step 7 : Trimming
 
 The `trim()` function removes any black borders introduced by the warping process by scanning the image from all four sides (top, bottom, left, right) and cropping to the tightest bounding box that contains actual image content.
 
-### Step 8 — Saving Intermediate Results
+### Step 8 : Saving Intermediate Results
 
 After each stitching step, the current result is saved:
 
