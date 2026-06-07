@@ -1,4 +1,4 @@
-# 🖼️ Panoramic Image Stitching — Mini Project
+# 🖼️ Panoramic Image Stitching 
 
 ## Overview
 
